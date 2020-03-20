@@ -48,13 +48,44 @@ function* getGhibliFilmsSaga({ payload }) {
     }
 }
 
+function* getGhibliPeopleSaga({ payload }) {
+    try {
+        let response;
+        const custom = makeApi().custom;
+        response = yield call([custom, custom.getGhibliPeople]);
+
+        if (response.data) {
+            yield put(types.getGhibliPeopleSuccess({ ghibliPeople: response.data }));
+        }
+
+    } catch (error) {
+        yield put(types.processFailure({ error }))
+    }
+}
+
+function* onFilmDescriptionChangeSaga({ payload }) {
+    yield put(types.onFilmDescriptionChangeSuccess(payload));
+}
+
+function* onFilmRateChangeSaga({ payload }) {
+    yield put(types.onFilmRateChangeSuccess(payload));
+}
+
+function* cleanGhibliPeopleSaga({ payload }) {
+    yield put(types.cleanGhibliPeopleSuccess(payload));
+}
 
 
 
 
 const customSagas = [
     takeEvery(types.getGhibliFilms, getGhibliFilmsSaga),
-   
+    takeEvery(types.onFilmDescriptionChange, onFilmDescriptionChangeSaga),
+    takeEvery(types.onFilmRateChange, onFilmRateChangeSaga),
+    takeEvery(types.getGhibliPeople, getGhibliPeopleSaga),
+    takeEvery(types.cleanGhibliPeople, cleanGhibliPeopleSaga),
+
 ];
+
 
 export default customSagas
